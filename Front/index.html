@@ -1,110 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion de Machine</title>
+    <title>DIGITAL-WORLD</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href=".css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Mini Usine</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#analytics">1-Silo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#settings">2-Lavage</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#settings">3-Séchage</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#settings">4-Cuisson</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="#settings">5-Emballage</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#settings">6-Stockage
-                    </a>
-                </li>
+
+<body class="sb-nav-fixed">
+    <!-- Navbar -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand -->
+        <a class="navbar-brand ps-3 d-flex align-items-center" href="index.html">
+            <i class="bi bi-radar me-2"></i> <!-- Icon with margin on the right -->
+            <span>DIGITAL-WORLD</span>       <!-- Text for the brand -->
+        </a>
+        <!-- Affichage du nom de l'utilisateur -->
+        <ul class="navbar-nav ms-auto"> 
+            <span class="navbar-text me-2" id="operateurInfo"></span>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="login.html">Se déconnecter</a></li>
                 </ul>
-            </div>
-        </div>
+            </li>
+        </ul>
     </nav>
+    <!-- Sidebar -->   
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <!-- Bouton Accueil -->
+                        <a class="nav-link text-white" href="index.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                            Accueil
+                        </a>
+                    
+                        <!-- Section Mes Installations -->
+                        <div class="nav-item mt-3">
+                            <a class="nav-link text-white">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tools"></i></div>
+                                Mes Installations
+                            </a>
+                            <div class="nav flex-column ms-3">
+                                <a class="nav-link text-secondary" href="installation1.html">Installation 1</a>
+                                <a class="nav-link text-secondary" href="installation2.html">Installation 2</a>
+                                <a class="nav-link text-secondary" href="installation3.html">Installation 3</a>
+                                <a class="nav-link text-secondary" href="installation4.html">Installation 4</a>
+                            </div>
+                        </div>
+                    
+                        <!-- Bouton Paramètres -->
+                        <a class="nav-link text-white mt-3" href="settings.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+                            Paramètres
+                        </a>
+                    </div>                    
+                </div>
+            </nav>
+        </div>
+        <!-- Main Content -->
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <!-- Header Section -->
+                    <div class="d-flex justify-content-center align-items-center mt-4 mb-4">
+                        <h1 class="h2">Accueil</h1>
+                    </div>
 
-    <header class="container my-5 text-center">
-        <h1>Suivi de la Machine en Temps Réel</h1>
-        <p class="lead">Analysez les performances, surveillez les données et optimisez la productivité.</p>
-    </header>
+                    <!-- Nouvelle Carte Section -->
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-plus-circle me-1"></i>
+                                    Nouvelle Machine
+                                </div>
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <label for="machineId" class="form-label">ID Machine</label>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control" id="machineId" placeholder="Entrez l'ID de la machine" required>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="button" class="btn btn-primary" onclick="addMachine()">Ajouter</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <main class="container">
-        <!-- Section Monitoring -->
-        <section id="monitoring" class="mb-5">
-            <h2>Suivi en Temps Réel</h2>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card shadow-sm">
+                    <!-- Tableau Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            Historique des Machines
+                        </div>
                         <div class="card-body">
-                            <h5 class="card-title">Statut de la Machine</h5>
-                            <p class="card-text">La machine fonctionne normalement.</p>
-                            <button id="toggle-status" class="btn btn-warning">Arrêter la Machine</button>
+                            <table id="datatablesSimple" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID Machine</th>
+                                        <th>Date d'ajout</th>
+                                        <th>Statut</th>
+                                        <th>Détails</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr>
+                                        <td>001</td>
+                                        <td>2024-11-19</td>
+                                        <td>En marche</td>
+                                        <td><a href="#">Voir</a></td>
+                                    </tr>
+                                    <!-- Ajoutez d'autres lignes ici -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Données Actuelles</h5>
-                            <ul id="data-list" class="list-group">
-                                <li class="list-group-item">Température : 75°C</li>
-                                <li class="list-group-item">Vitesse : 1200 tr/min</li>
-                                <li class="list-group-item">Efficacité : 95%</li>
-                            </ul>
-                        </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; DIGITAL-WORLD 2024</div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </footer>
+        </div>
+    </div>
 
-        <!-- Section Analytics -->
-        <section id="analytics" class="mb-5">
-            <h2>Analyse des Données</h2>
-            <canvas id="dataChart" height="200"></canvas>
-        </section>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.js"></script>
+    <script>
+        // Script d'initialisation pour le tableau interactif
+        const dataTable = new simpleDatatables.DataTable("#datatablesSimple");
 
-        <!-- Section Settings -->
-        <section id="settings">
-            <h2>Paramètres de la Machine</h2>
-            <form>
-                <div class="mb-3">
-                    <label for="temperature" class="form-label">Température Maximum (°C)</label>
-                    <input type="number" class="form-control" id="temperature" placeholder="Ex : 100">
-                </div>
-                <div class="mb-3">
-                    <label for="speed" class="form-label">Vitesse Maximum (tr/min)</label>
-                    <input type="number" class="form-control" id="speed" placeholder="Ex : 1500">
-                </div>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-            </form>
-        </section>
-    </main>
-
-    <footer class="bg-dark text-center text-white py-3">
-        &copy; 2024 Gestion Machine - Tous droits réservés.
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src=".js/index.js"></script>
+        // Fonction pour ajouter une machine
+        function addMachine() {
+            const machineId = document.getElementById("machineId").value;
+            if (!machineId.trim()) {
+                alert("Veuillez entrer un ID de machine valide.");
+                return;
+            }
+            
+            // Ajouter la machine au tableau
+            const tableBody = document.getElementById("tableBody");
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `<td>${machineId}</td><td>${new Date().toLocaleDateString()}</td><td>En marche</td><td><a href="#">Voir</a></td>`;
+            
+            // Réinitialiser le champ de saisie
+            document.getElementById("machineId").value = '';
+        }
+    </script>
 </body>
 </html>
