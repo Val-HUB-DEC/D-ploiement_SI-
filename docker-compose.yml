@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./Front:/usr/share/nginx/html
+    networks:
+      - DIGITAL_WORLD
+
+  backend:
+    build:
+      context: .  # Racine du projet
+      dockerfile: Dockerfile  # Spécifiez le Dockerfile
+    ports:
+      - "5001:5000"
+    depends_on:
+      - mariadb
+    volumes:
+      - ./Back:/app
+    networks:
+      - DIGITAL_WORLD
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: DB_DIGITAL_WORLD
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./Back/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - DIGITAL_WORLD
+
+volumes:
+  mariadb_data:
+
+networks:
+  DIGITAL_WORLD:
+    driver: bridge
