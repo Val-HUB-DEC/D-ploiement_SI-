@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
 const ping = require("ping");
+const { lireValeurModbus } = require('./Read_API_Module');
 
 // Configuration du serveur Express
 const app = express();
@@ -30,6 +31,17 @@ app.get("/ping/:ip", async (req, res) => {
   } catch (error) {
     console.error(`Erreur lors du ping de ${ip} :`, error);
     res.json({ status: "error", error: error.message });
+  }
+}); 
+
+app.get('/modbus/read', async (req, res) => {
+  const { ip, address, port, quantity } = req.query;
+
+  try {
+      const result = await lireValeurModbus(ip, Number(address), Number(port), Number(quantity));
+      res.json(result);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
   }
 });
 
@@ -139,6 +151,24 @@ app.get('/installations/:id', (req, res) => {
   });
 });
 
+app.get('/appareil/:id', (req, res) => {
+  const installationId = req.params.id; // Récupérer l'ID à partir des paramètres de la requête
+
+  const sql = "SELECT * FROM appareil WHERE ID = ?";
+  db.query(sql, [installationId], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération de l'appareil :", err);
+      return res.status(500).send("Erreur lors de la récupération de l'appareil.");
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send("appareil introuvable.");
+    }
+
+    res.json(results[0]); // Renvoyer l'installation correspondante
+  });
+});
+
 app.get('/appareils/:installationId', (req, res) => {
   const installationId = req.params.installationId;
 
@@ -156,7 +186,6 @@ app.get('/appareils/:installationId', (req, res) => {
     res.json(results);
   });
 });
-
 
 app.post("/appareils", (req, res) => {
   const { Nom, ip, Status, ID_of_installation } = req.body;
@@ -205,7 +234,68 @@ app.delete("/appareils/:id", (req, res) => {
   });
 });
 
+app.post('/variable', (req, res) => {
+  // Extraire les données envoyées dans la requête
+  const { Nom, I_Bool, I_int, taux, unité, adresse, Port_API, I_MAE_MIN, I_MAE_MAX, O_MAE_MIN, O_MAE_MAX, ID_of_appareil } = req.body;
 
+  // Requête SQL pour insérer les données dans la table 'variable'
+  const query = `INSERT INTO variable (Nom, I_Bool, I_int, taux, unité, adresse, Port_API, I_MAE_MIN, I_MAE_MAX, O_MAE_MIN, O_MAE_MAX, ID_of_appareil)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  // Exécution de la requête SQL
+  db.execute(query, [Nom, I_Bool, I_int, taux, unité, adresse, Port_API, I_MAE_MIN, I_MAE_MAX, O_MAE_MIN, O_MAE_MAX, ID_of_appareil], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de l\'insertion:', err);
+      return res.status(500).json({ error: 'Erreur serveur lors de l\'insertion' });
+    }
+    res.status(201).json({ message: 'Variable ajoutée avec succès', id: results.insertId });
+  });
+});
+
+// Route pour récupérer une variable par ID
+app.get('/variables/:id_of_appreil', (req, res) => {
+  const appareilId = req.params.id_of_appreil;  // Récupère l'ID de l'appareil depuis l'URL
+  
+  // Requête SQL pour récupérer toutes les variables associées à cet appareil
+  const query = `
+      SELECT * 
+      FROM variable 
+      WHERE ID_of_appareil = ?`;
+
+  db.query(query, [appareilId], (err, results) => {
+      if (err) {
+          console.error('Erreur de la requête SQL:', err);
+          return res.status(500).json({ error: 'Erreur serveur lors de la récupération des variables.' });
+      }
+
+      // Si aucune variable n'est trouvée
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'Aucune variable trouvée pour cet appareil.' });
+      }
+
+      // Renvoie les variables de l'appareil
+      res.status(200).json(results);
+  });
+});
+
+app.delete('/variable/:id', (req, res) => {
+  const variableId = req.params.id;
+
+  const query = 'DELETE FROM variable WHERE ID = ?';
+
+  db.execute(query, [variableId], (err, results) => {
+      if (err) {
+          console.error('Erreur lors de la suppression de la variable :', err);
+          return res.status(500).json({ error: 'Erreur serveur lors de la suppression.' });
+      }
+
+      if (results.affectedRows === 0) {
+          return res.status(404).json({ error: 'Variable non trouvée.' });
+      }
+
+      res.status(200).json({ message: 'Variable supprimée avec succès.' });
+  });
+});
 
 
 // Lancer le serveur

@@ -68,6 +68,7 @@
     "mime-db": "^1.52.0",
     "mime-types": "^2.1.35",
     "minimatch": "^3.1.2",
+    "modbus-serial": "^8.0.17",
     "ms": "^2.0.0",
     "mysql2": "^3.11.5",
     "negotiator": "^0.6.3",
