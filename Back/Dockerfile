@@ -9,6 +9,8 @@ COPY package.json ./*
 
 # Étape 4 : Installation de nodemon globalement
 RUN npm install -g nodemon
+RUN npm install ping
+
 
 # Étape 5 : Copier tous les fichiers du projet dans le conteneur
 COPY . .

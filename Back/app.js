@@ -1,20 +1,44 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
+const ping = require("ping");
 
 // Configuration du serveur Express
 const app = express();
 const port = 5000;
 
+
 app.use(express.json()); // Permet à Express d'analyser le corps en JSON
 app.use(cors()); // Autoriser toutes les origines
 
+
+app.get("/ping/:ip", async (req, res) => {
+  const { ip } = req.params; // Récupère l'adresse IP depuis l'URL
+
+  try {
+    const pingResult = await ping.promise.probe(ip, {
+      timeout: 5, // Timeout en secondes
+    });
+
+    if (pingResult.alive) {
+      console.log(`Machine ${ip} est en ligne.`);
+      res.json({ status: "online", time: pingResult.time }); // Temps de réponse
+    } else {
+      console.log(`Machine ${ip} est hors ligne.`);
+      res.json({ status: "offline" });
+    }
+  } catch (error) {
+    console.error(`Erreur lors du ping de ${ip} :`, error);
+    res.json({ status: "error", error: error.message });
+  }
+});
+
 // Configuration de la base de données
 const db = mysql.createConnection({
-  host: "mariadb",       // Adresse du serveur MariaDB
+  host: "db",       // Adresse du serveur MariaDB
   user: "root",            // Nom d'utilisateur de la base de données
   password: "root",            // Mot de passe (laisser vide par défaut)
-  database: "DIGITAL_WORLD" // Nom de la base de données
+  database: "DB_DIGITAL_WORLD", // Nom de la base de données
 });
 
 // Connexion à la base de données
@@ -96,7 +120,37 @@ app.delete("/installations/:id", (req, res) => {
   });
 });
 
+// Route pour récupérer une installation par ID
+app.get('/installations/:id', (req, res) => {
+  const installationId = req.params.id; // Récupérer l'ID à partir des paramètres de la requête
 
+  const sql = "SELECT * FROM installation WHERE ID = ?";
+  db.query(sql, [installationId], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération de l'installation :", err);
+      return res.status(500).send("Erreur lors de la récupération de l'installation.");
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send("Installation introuvable.");
+    }
+
+    res.json(results[0]); // Renvoyer l'installation correspondante
+  });
+});
+
+app.get('/appareils/:installationId', (req, res) => {
+  const installationId = req.params.installationId;
+
+  const sql = "SELECT * FROM appareil WHERE ID_of_installation = ?";
+  db.query(sql, [installationId], (err, results) => {
+    if (err) {
+      console.error("Erreur lors de la récupération des appareils :", err);
+      return res.status(500).send("Erreur lors de la récupération des appareils.");
+    }
+    res.json(results);
+  });
+});
 
 
 // Lancer le serveur
