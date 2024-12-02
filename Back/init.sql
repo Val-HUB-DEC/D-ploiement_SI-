@@ -1,6 +1,6 @@
 -- Création de la base de données et des tables
-CREATE DATABASE IF NOT EXISTS DIGITAL_WORLD;
-USE DIGITAL_WORLD;
+CREATE DATABASE IF NOT EXISTS DB_DIGITAL_WORLD;
+USE DB_DIGITAL_WORLD;
 
 -- Table 1 : Installation
 CREATE TABLE IF NOT EXISTS installation (
@@ -14,10 +14,8 @@ CREATE TABLE IF NOT EXISTS installation (
 CREATE TABLE IF NOT EXISTS appareil (
   ID INT AUTO_INCREMENT PRIMARY KEY,
   Nom CHAR(255) NOT NULL,
-  Nb_Appareil INT NOT NULL,
   Status BOOL NOT NULL,
   ip CHAR(15) NOT NULL,
-  masque CHAR(15) NOT NULL,
   ID_of_installation INT,
   FOREIGN KEY (ID_of_installation) REFERENCES installation(ID)
 );

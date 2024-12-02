@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: DB_DIGITAL_WORLD
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./Back/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - DIGITAL_WORLD
+
   frontend:
     image: nginx:latest
     ports:
@@ -15,28 +28,15 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - mariadb
+      - db
     volumes:
       - ./Back:/app
     networks:
       - DIGITAL_WORLD
 
-  mariadb:
-    image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: DB_DIGITAL_WORLD
-    ports:
-      - "3306:3306"
-    volumes:
-      - mariadb_data:/var/lib/mysql
-      - ./Back/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - DIGITAL_WORLD
 
 volumes:
   mariadb_data:
 
 networks:
   DIGITAL_WORLD:
-    driver: bridge

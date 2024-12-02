@@ -21,7 +21,7 @@ async function GET_Installations() {
         <td>${installation.Nom}</td>
         <td>${installation.Nb_Appareil}</td>
         <td>${installation.Status === 1 ? 'En ligne' : installation.Status === 0 ? 'Hors ligne' : 'Erreur'}</td>
-        <td><a href="installation${installation.ID}.html">Voir</a></td>
+        <td><a href="appareil.html?id=${installation.ID}">Voir</a></td>
         <td><a onclick="DEL_Installation(${installation.ID})"><i class="bi bi-trash3"></i></a></td>
       `;
 
@@ -32,7 +32,7 @@ async function GET_Installations() {
     installations.forEach((installation) => {
       const link = document.createElement('a');
       link.className = 'nav-link text-secondary';
-      link.href = `installation${installation.ID}.html`; // Par exemple, rediriger vers une page spécifique à chaque installation
+      link.href = `appareil.html?id=${installation.ID}`; // Par exemple, rediriger vers une page spécifique à chaque installation
       link.textContent = installation.Nom;
 
       // Ajoute le lien au conteneur
@@ -105,14 +105,13 @@ async function POST_Installation(event) {
         alert('Erreur lors de l\'ajout de l\'installation');
       }
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de l\'installation:', error);
-      alert('Une erreur est survenue');
+      //console.error('Erreur lors de l\'ajout de l\'installation:', error);
+      //alert('Une erreur est survenue');
     }
 }
 
 // Charge les installations au chargement de la page
 document.addEventListener('DOMContentLoaded', GET_Installations);
-// Ajout d'une installationà l'appuie du BP
 // Ajoute une installation au clic sur le bouton
 document.getElementById('ajouterInstallationBtn').addEventListener('click', POST_Installation);
 
