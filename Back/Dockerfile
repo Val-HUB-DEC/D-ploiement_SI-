@@ -8,9 +8,8 @@ WORKDIR /app
 COPY package.json ./*
 
 # Étape 4 : Installation de nodemon globalement
-RUN npm install -g nodemon
-RUN npm install ping
 
+RUN npm install -g nodemon
 
 # Étape 5 : Copier tous les fichiers du projet dans le conteneur
 COPY . .

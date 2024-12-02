@@ -61,7 +61,7 @@ async function GET_Appareils(installationId) {
                 <td>${appareil.Nom}</td>
                 <td>${appareil.ip}</td>
                 <td>${appareil.Status === 1 ? 'En ligne' : 'Hors ligne'}</td>
-                <td><a href="appareil_details.html?id=${appareil.ID}">Voir</a></td>
+                <td><a href="variable.html?id=${appareil.ID}">Voir</a></td>
                 <td><a onclick="DEL_Appareil(${appareil.ID})"><i class="bi bi-trash3"></i></a></td>
             `;
 
