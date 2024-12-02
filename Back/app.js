@@ -146,11 +146,66 @@ app.get('/appareils/:installationId', (req, res) => {
   db.query(sql, [installationId], (err, results) => {
     if (err) {
       console.error("Erreur lors de la récupération des appareils :", err);
-      return res.status(500).send("Erreur lors de la récupération des appareils.");
+      return res.status(500).json({ message: "Erreur lors de la récupération des appareils." });
     }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Aucun appareil trouvé pour cette installation." });
+    }
+
     res.json(results);
   });
 });
+
+
+app.post("/appareils", (req, res) => {
+  const { Nom, ip, Status, ID_of_installation } = req.body;
+
+  // Vérification des champs requis
+  if (!Nom || !ip || Status === undefined || !ID_of_installation) {
+      return res.status(400).json({ message: "Données manquantes." });
+  }
+
+  const sql = "INSERT INTO appareil (Nom, ip, Status, ID_of_installation) VALUES (?, ?, ?, ?)";
+
+  db.query(sql, [Nom, ip, Status, ID_of_installation], (err, result) => {
+      if (err) {
+          console.error("Erreur lors de l'ajout de l'appareil :", err);
+          return res.status(500).json({ message: "Erreur lors de l'ajout de l'appareil." });
+      }
+
+      res.status(201).json({
+          Nom: result.insertId,
+          ip,
+          Status,
+          ID_of_installation
+      });
+  });
+});
+
+app.delete("/appareils/:id", (req, res) => {
+  const { id } = req.params; // Récupère l'ID de l'appareil depuis l'URL
+
+  if (!id) {
+    return res.status(400).json({ message: "ID de l'appareil manquant." });
+  }
+
+  const sql = "DELETE FROM appareil WHERE ID = ?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la suppression de l'appareil :", err);
+      return res.status(500).json({ message: "Erreur lors de la suppression de l'appareil." });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Aucun appareil trouvé avec cet ID." });
+    }
+
+    res.status(200).json({ message: `Appareil avec ID ${id} supprimé avec succès.` });
+  });
+});
+
+
 
 
 // Lancer le serveur

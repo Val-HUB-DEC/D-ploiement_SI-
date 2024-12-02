@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 5000
 
 # Étape 7 : Lancer l'application avec nodemon
-CMD ["nodemon", "app.js"]
+CMD ["nodemon","--legacy-watch", "app.js"]
