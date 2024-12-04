@@ -297,6 +297,61 @@ app.delete('/variable/:id', (req, res) => {
   });
 });
 
+// Route pour récupérer une variable par ID
+app.get('/variable/:id', (req, res) => {
+  const Id = req.params.id;  // Récupère l'ID de l'appareil depuis l'URL
+  
+  // Requête SQL pour récupérer toutes les variables associées à cet appareil
+  const query = `
+      SELECT * 
+      FROM variable 
+      WHERE ID = ?`;
+
+  db.query(query, [Id], (err, results) => {
+      if (err) {
+          console.error('Erreur de la requête SQL:', err);
+          return res.status(500).json({ error: 'Erreur serveur lors de la récupération des variables.' });
+      }
+
+      // Si aucune variable n'est trouvée
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'Aucune variable trouvée pour cet appareil.' });
+      }
+
+      // Renvoie les variables de l'appareil
+      res.status(200).json(results);
+  });
+});
+ 
+app.get('/valeurs/:id', (req, res) => {
+  const variableId = req.params.id;  // Récupérer l'ID de la variable depuis les paramètres de l'URL
+
+  // Requête SQL pour récupérer les valeurs associées à l'ID de la variable
+  const query = `
+    SELECT *
+    FROM valeurs v
+    WHERE v.ID_of_variable = ?
+    ORDER BY v.dates ASC;  -- Trier les résultats par date
+  `;
+
+  db.query(query, [variableId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des valeurs :', err);
+      return res.status(500).send('Erreur serveur');
+    }
+
+    // Vérifier si des résultats ont été trouvés
+    if (results.length === 0) {
+      return res.status(404).send('Aucune valeur trouvée pour cet ID de variable');
+    }
+
+    // Renvoi des résultats sous forme de JSON
+    res.json(results);
+  });
+});
+
+
+
 
 // Lancer le serveur
 app.listen(port, () => {

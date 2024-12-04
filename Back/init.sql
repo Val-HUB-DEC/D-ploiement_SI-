@@ -44,5 +44,6 @@ CREATE TABLE IF NOT EXISTS valeurs (
   ID INT AUTO_INCREMENT PRIMARY KEY,
   ID_of_variable INT,
   value INT NOT NULL,
+  dates DATETIME,
   FOREIGN KEY (ID_of_variable) REFERENCES variable(ID)
 );

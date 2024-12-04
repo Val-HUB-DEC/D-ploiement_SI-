@@ -134,13 +134,12 @@ document.getElementById('btnLire').addEventListener('click', async () => {
 
     try {
         const response = await fetch(`http://localhost:5000/modbus/read?ip=${ip}&address=${address}&port=${port}&quantity=${quantity}`);
-        alert('/modbus/read?ip='+ip+'&address='+address+'&port'+port+'&quantity='+quantity);
         const data = await response.json();
 
         if (response.ok) {
-            alert(data);
+            console.log(data);
         } else {
-            alert(data.error);
+            console.log(data.error);
         }
     } catch (error) {
         alert('Erreur : '+ error.message);
