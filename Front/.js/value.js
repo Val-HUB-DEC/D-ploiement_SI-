@@ -144,6 +144,10 @@ async function GET_value() {
     });
 }
 
+
+
+
+
 // Fonction principale pour initialiser la page
 document.addEventListener('DOMContentLoaded', () => {
     GET_Installations(); // Charger le menu des installations

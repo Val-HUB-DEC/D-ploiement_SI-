@@ -112,7 +112,7 @@ document.getElementById('btnLire').addEventListener('click', async () => {
     const address = document.getElementById('variableAdress').value;
     const port = document.getElementById('variablePort').value;
     const quantity = 1;
-    let ip
+    let ip;
 
     // Vérification des champs requis
     if (!address || !port) {
@@ -133,11 +133,11 @@ document.getElementById('btnLire').addEventListener('click', async () => {
     
 
     try {
-        const response = await fetch(`http://localhost:5000/modbus/read?ip=${ip}&address=${address}&port=${port}&quantity=${quantity}`);
+        const response = await fetch(`http://localhost:5000/modbus/read?ip=${ip}&address=${address}&port=${port}`);
         const data = await response.json();
 
         if (response.ok) {
-            console.log(data);
+            alert('Valeur :'+ data.value);
         } else {
             console.log(data.error);
         }
