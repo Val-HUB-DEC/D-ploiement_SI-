@@ -350,7 +350,31 @@ app.get('/valeurs/:id', (req, res) => {
   });
 });
 
+app.post('/valeurs/:ID_of_variable', (req, res) => {
+  const ID_of_variable = req.params.ID_of_variable; // Récupérer l'ID depuis l'URL
+  const { value } = req.body; // La valeur est envoyée dans le body
+  const dates = new Date(); // Utiliser la date actuelle
 
+  if (isNaN(ID_of_variable)) {
+      return res.status(400).json({ error: "Données manquantes ou invalides" });
+  }
+
+  // Requête SQL pour insérer la valeur
+  const query = `
+      INSERT INTO valeurs (ID_of_variable, value, dates)
+      VALUES (?, ?, ?);
+  `;
+
+  db.query(query, [ID_of_variable, value, dates], (err, result) => {
+      if (err) {
+          console.error('Erreur lors de l\'insertion de la valeur :', err);
+          return res.status(500).send('Erreur serveur');
+      }
+
+      // Réponse avec l'ID de l'enregistrement inséré
+      res.status(201).json({ message: 'Valeur ajoutée avec succès', insertedId: result.insertId });
+  });
+});
 
 
 // Lancer le serveur

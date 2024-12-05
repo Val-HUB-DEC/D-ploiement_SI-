@@ -1,4 +1,4 @@
--- Active: 1733157311690@@127.0.0.1@3306@DB_DIGITAL_WORLD
+-- Active: 1733157311690@@127.0.0.1@3306
 -- Création de la base de données et des tables
 CREATE DATABASE IF NOT EXISTS DB_DIGITAL_WORLD;
 USE DB_DIGITAL_WORLD;
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS appareil (
   Status BOOL NOT NULL,
   ip CHAR(15) NOT NULL,
   ID_of_installation INT,
-  FOREIGN KEY (ID_of_installation) REFERENCES installation(ID)
+  FOREIGN KEY (ID_of_installation) REFERENCES installation(ID) ON DELETE CASCADE
 );
 
 -- Table 3 : Variable
@@ -32,11 +32,11 @@ CREATE TABLE IF NOT EXISTS variable (
   adresse CHAR(255) NOT NULL,
   Port_API CHAR(255) NOT NULL,
   I_MAE_MIN INT NOT NULL,
-  I_MAE_MAX INT NOT NULL,  -- Ajout de la colonne I_MAE_MAX
-  O_MAE_MIN INT NOT NULL,  -- Ajout de la colonne O_MAE_MIN
-  O_MAE_MAX INT NOT NULL,  -- Ajout de la colonne O_MAE_MAX
-  ID_of_appareil INT,      -- Ajout de la colonne pour lier avec l'appareil
-  FOREIGN KEY (ID_of_appareil) REFERENCES appareil(ID)
+  I_MAE_MAX INT NOT NULL,
+  O_MAE_MIN INT NOT NULL,
+  O_MAE_MAX INT NOT NULL,
+  ID_of_appareil INT,
+  FOREIGN KEY (ID_of_appareil) REFERENCES appareil(ID) ON DELETE CASCADE
 );
 
 -- Table 4 : Valeurs
@@ -45,5 +45,6 @@ CREATE TABLE IF NOT EXISTS valeurs (
   ID_of_variable INT,
   value INT NOT NULL,
   dates DATETIME,
-  FOREIGN KEY (ID_of_variable) REFERENCES variable(ID)
+  FOREIGN KEY (ID_of_variable) REFERENCES variable(ID) ON DELETE CASCADE
 );
+
