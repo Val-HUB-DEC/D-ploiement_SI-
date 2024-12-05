@@ -9,6 +9,7 @@ const app = express();
 const port = 5000;
 
 
+
 app.use(express.json()); // Permet à Express d'analyser le corps en JSON
 app.use(cors()); // Autoriser toutes les origines
 

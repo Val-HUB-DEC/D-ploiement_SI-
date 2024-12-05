@@ -299,68 +299,80 @@ async function POST_cycle_value() {
 }
 
 function exportCSV() {
-    // Demander à l'utilisateur la date de début, la date de fin et le nom du fichier
-    const startDate = prompt('Entrez la date de début (format YYYY-MM-DD HH:mm:ss) :');
-    const endDate = prompt('Entrez la date de fin (format YYYY-MM-DD HH:mm:ss) :');
-    const fileName = prompt('Entrez le nom du fichier CSV (par défaut : valeurs.csv) :') || 'valeurs.csv';
+    const startDateInput = document.getElementById('startDate').value;
+    const endDateInput = document.getElementById('endDate').value;
+    const fileNameInput = document.getElementById('fileName').value || 'valeurs.csv';
 
-    // Vérifier la validité des dates
-    if (!startDate || !endDate) {
-        alert('Les dates de début et de fin sont obligatoires.');
+    // Vérifier les entrées
+    if (!startDateInput || !endDateInput) {
+        alert('Veuillez sélectionner les dates de début et de fin.');
         return;
     }
 
-    // Vérifier si le tableau existe
+    const startDate = new Date(startDateInput);
+    const endDate = new Date(endDateInput);
+
+    if (startDate > endDate) {
+        alert('La date de début ne peut pas être après la date de fin.');
+        return;
+    }
+
     const table = document.getElementById('datatablesSimple');
     if (!table) {
         console.error('Le tableau avec l\'ID "datatablesSimple" est introuvable.');
         return;
     }
 
-    // Obtenir toutes les lignes du tableau
     const rows = table.querySelectorAll('tr');
     const csvContent = [];
 
     rows.forEach(row => {
-        // Extraire les cellules de chaque ligne
         const cells = row.querySelectorAll('td, th');
-        const rowDate = row.querySelector('td')?.textContent.trim(); // Suppose que la date est dans la première colonne
-
-        // Vérifier si la ligne est dans la plage de dates spécifiée
-        if (rowDate) {
-            const rowDateObj = new Date(rowDate);
-            const startDateObj = new Date(startDate);
-            const endDateObj = new Date(endDate);
-
-            if (rowDateObj >= startDateObj && rowDateObj <= endDateObj) {
+        const rowDateText = row.querySelector('td')?.textContent.trim(); // Suppose que la première colonne contient les dates
+        if (rowDateText) {
+            const rowDate = new Date(rowDateText);
+            if (rowDate >= startDate && rowDate <= endDate) {
                 const rowContent = Array.from(cells).map(cell => cell.textContent.trim()).join(',');
                 csvContent.push(rowContent);
             }
         }
     });
 
-    // Vérifier si des données ont été ajoutées
     if (csvContent.length === 0) {
         alert('Aucune donnée ne correspond à la plage de dates spécifiée.');
         return;
     }
 
-    // Créer le fichier CSV
     const csvBlob = new Blob([csvContent.join('\n')], { type: 'text/csv' });
     const csvUrl = URL.createObjectURL(csvBlob);
     const link = document.createElement('a');
 
     link.href = csvUrl;
-    link.download = fileName.endsWith('.csv') ? fileName : `${fileName}.csv`;
+    link.download = fileNameInput.endsWith('.csv') ? fileNameInput : `${fileNameInput}.csv`;
     link.click();
+
+    // Fermer le modal après l'exportation
+    const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
+    modal.hide();
 }
+
+
+
+function openModal() {
+    document.getElementById('exportModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('exportModal').style.display = 'none';
+}
+
 
 // Fonction principale pour initialiser la page
 document.addEventListener('DOMContentLoaded', () => {
+    POST_value(); 
     //clearInterval(intervalId);
     GET_Installations(); // Charger le menu des installations
     GET_Variable_PARAM(); // Charger les détails de l'installation
-    POST_value(); 
     POST_cycle_value();
 });
 

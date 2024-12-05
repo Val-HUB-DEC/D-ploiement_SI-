@@ -137,7 +137,40 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <i class="fas fa-table me-1"></i>
                             Liste des valeurs
-                            <button type="button" id="ajouterInstallationBtn" class="btn btn-primary ms-auto" onclick="exportCSV()">Export .CSV</button>
+                            <!-- Modal Bootstrap -->
+                            <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exportModalLabel">Exportation des données CSV</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="exportForm">
+                                                <div class="mb-3">
+                                                    <label for="startDate" class="form-label">Date de début :</label>
+                                                    <input type="datetime-local" id="startDate" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="endDate" class="form-label">Date de fin :</label>
+                                                    <input type="datetime-local" id="endDate" class="form-control" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="fileName" class="form-label">Nom du fichier :</label>
+                                                    <input type="text" id="fileName" class="form-control" placeholder="valeurs.csv">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <button type="button" class="btn btn-success" onclick="exportCSV()">Exporter</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bouton pour ouvrir le modal -->
+                            <button type="button" id="ajouterInstallationBtn" class="btn btn-primary ms-auto"data-bs-toggle="modal" data-bs-target="#exportModal">Export .CSV</button>
                         </div>
                         <div class="card-body">
                             <table id="datatablesSimple" class="table">
