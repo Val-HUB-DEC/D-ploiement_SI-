@@ -3,11 +3,11 @@ const cors = require("cors");
 const mysql = require("mysql2");
 const ping = require("ping");
 const { lireValeurModbus } = require('./Read_API_Module');
+//const { POST_cycle } = require('./POST_CYCLE');
 
 // Configuration du serveur Express
 const app = express();
 const port = 5000;
-
 
 
 app.use(express.json()); // Permet à Express d'analyser le corps en JSON
@@ -279,6 +279,30 @@ app.get('/variables/:id_of_appreil', (req, res) => {
   });
 });
 
+app.get('/variables', (req, res) => {
+  // Requête SQL pour récupérer toutes les variables
+  const query = `
+      SELECT * 
+      FROM variable`;
+
+  // Exécution de la requête SQL
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error('Erreur lors de l\'exécution de la requête SQL:', err);
+          return res.status(500).json({ error: 'Erreur serveur lors de la récupération des variables.' });
+      }
+
+      // Vérifie si aucune variable n'est trouvée
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'Aucune variable trouvée dans la base de données.' });
+      }
+
+      // Envoie les résultats (toutes les variables) au client
+      res.status(200).json(results);
+  });
+});
+
+
 app.delete('/variable/:id', (req, res) => {
   const variableId = req.params.id;
 
@@ -382,3 +406,5 @@ app.post('/valeurs/:ID_of_variable', (req, res) => {
 app.listen(port, () => {
   console.log(`Serveur Node.js en cours d'écution sur http://localhost:${port}`);
 });
+
+//POST_cycle();
